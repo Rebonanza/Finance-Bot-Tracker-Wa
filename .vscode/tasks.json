@@ -1,0 +1,43 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+        {
+            "label": "Run WhatsApp Finance Bot",
+            "type": "shell",
+            "command": "/Users/macintosh/Documents/Given/project/finance-tracker-bot-wa/.venv/bin/python",
+            "args": [
+                "app.py"
+            ],
+            "group": "build",
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "Test Message Parser",
+            "type": "shell",
+            "command": "/Users/macintosh/Documents/Given/project/finance-tracker-bot-wa/.venv/bin/python",
+            "args": ["test_parser.py"],
+            "group": "test",
+            "isBackground": false,
+            "problemMatcher": []
+        },
+        {
+            "label": "Setup Bot Configuration",
+            "type": "shell",
+            "command": "/Users/macintosh/Documents/Given/project/finance-tracker-bot-wa/.venv/bin/python",
+            "args": ["setup.py"],
+            "group": "build",
+            "isBackground": false,
+            "problemMatcher": []
+        },
+        {
+            "label": "Install Dependencies",
+            "type": "shell",
+            "command": "/Users/macintosh/Documents/Given/project/finance-tracker-bot-wa/.venv/bin/pip",
+            "args": ["install", "-r", "requirements.txt"],
+            "group": "build",
+            "isBackground": false,
+            "problemMatcher": []
+        }
+    ]
+}
