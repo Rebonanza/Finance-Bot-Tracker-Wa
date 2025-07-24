@@ -30,10 +30,27 @@ class GoogleSheetsManager:
             # Define the scope
             scopes = ['https://www.googleapis.com/auth/spreadsheets']
             
-            # Load credentials
-            credentials = Credentials.from_service_account_file(
-                self.credentials_file, scopes=scopes
-            )
+            # Try to load credentials from environment variable first (for production)
+            credentials_json = os.getenv('GOOGLE_APPLICATION_CREDENTIALS_JSON')
+            
+            if credentials_json:
+                # Production: load from environment variable
+                import json
+                import base64
+                from google.oauth2.service_account import Credentials
+                
+                # Decode base64 credentials
+                decoded_credentials = base64.b64decode(credentials_json).decode('utf-8')
+                credentials_info = json.loads(decoded_credentials)
+                
+                credentials = Credentials.from_service_account_info(
+                    credentials_info, scopes=scopes
+                )
+            else:
+                # Local development: load from file
+                credentials = Credentials.from_service_account_file(
+                    self.credentials_file, scopes=scopes
+                )
             
             # Build the service
             self.service = build('sheets', 'v4', credentials=credentials)

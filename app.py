@@ -144,9 +144,13 @@ if __name__ == '__main__':
     
     # Initialize components
     if initialize_components():
-        print("📱 Starting Flask server on port 5000")
-        print("🔗 Webhook URL: http://localhost:5000/webhook")
-        print("🧪 Test URL: http://localhost:5000/test")
-        app.run(debug=True, host='0.0.0.0', port=5000)
+        # Get port from environment variable for production deployment
+        port = int(os.environ.get('PORT', 5000))
+        print(f"📱 Starting Flask server on port {port}")
+        print("🔗 Webhook URL: /webhook")
+        print("🧪 Test URL: /test")
+        
+        # Production-safe settings
+        app.run(debug=False, host='0.0.0.0', port=port)
     else:
         print("❌ Failed to initialize components. Please check your configuration.")
