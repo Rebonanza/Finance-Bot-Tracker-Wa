@@ -35,15 +35,55 @@ def initialize_components():
         print(f"❌ Error initializing components: {str(e)}")
         return False
 
+# Initialize components immediately when module loads (for production)
+print("🚀 Initializing WhatsApp Finance Tracker Bot components...")
+if not initialize_components():
+    print("❌ Warning: Some components failed to initialize")
+
 @app.route('/')
 def home():
     """Home endpoint"""
     return "WhatsApp Finance Tracker Bot is running! 🤖💰"
 
+@app.route('/health')
+def health():
+    """Health check endpoint for Railway"""
+    try:
+        status = {
+            "status": "healthy",
+            "timestamp": "2025-07-25",
+            "components": {
+                "parser": parser is not None,
+                "sheets_manager": sheets_manager is not None,
+                "whatsapp_bot": whatsapp_bot is not None
+            }
+        }
+        
+        # If components aren't initialized, try to initialize them
+        if not all(status["components"].values()):
+            print("🔄 Some components not initialized, attempting initialization...")
+            if initialize_components():
+                status["components"]["sheets_manager"] = sheets_manager is not None
+                status["components"]["whatsapp_bot"] = whatsapp_bot is not None
+                status["initialization"] = "success"
+            else:
+                status["initialization"] = "failed"
+        
+        return status, 200
+        
+    except Exception as e:
+        return {"status": "error", "error": str(e)}, 500
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
     """Handle incoming WhatsApp messages"""
     try:
+        # Check if components are initialized
+        if not whatsapp_bot or not sheets_manager:
+            print("❌ Components not initialized, attempting to initialize...")
+            if not initialize_components():
+                return "Components initialization failed", 500
+        
         # Get message data from Twilio
         incoming_msg = request.values.get('Body', '').strip()
         from_number = request.values.get('From', '')
