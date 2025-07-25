@@ -37,7 +37,6 @@ class GoogleSheetsManager:
                 # Production: load from environment variable
                 import json
                 import base64
-                from google.oauth2.service_account import Credentials
                 
                 # Decode base64 credentials
                 decoded_credentials = base64.b64decode(credentials_json).decode('utf-8')

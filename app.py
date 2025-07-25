@@ -89,7 +89,7 @@ def webhook():
         from_number = request.values.get('From', '')
         
         # Get family member name
-        family_member = whatsapp_bot.get_family_member(from_number)
+        family_member = whatsapp_bot.get_family_member(from_number) if whatsapp_bot else "Unknown"
         
         print(f"Received message from {family_member} ({from_number}): {incoming_msg}")
         
