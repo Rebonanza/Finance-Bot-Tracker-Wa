@@ -45,11 +45,14 @@ class GoogleSheetsManager:
                 credentials = Credentials.from_service_account_info(
                     credentials_info, scopes=scopes
                 )
-            else:
+            elif os.path.exists(self.credentials_file):
                 # Local development: load from file
                 credentials = Credentials.from_service_account_file(
                     self.credentials_file, scopes=scopes
                 )
+            else:
+                # No credentials available
+                raise Exception("No Google credentials found. Set GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable or provide credentials.json file")
             
             # Build the service
             self.service = build('sheets', 'v4', credentials=credentials)

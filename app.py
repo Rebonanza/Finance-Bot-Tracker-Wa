@@ -82,51 +82,76 @@ def webhook():
         if not whatsapp_bot or not sheets_manager:
             print("❌ Components not initialized, attempting to initialize...")
             if not initialize_components():
+                print("❌ Components initialization failed")
                 return "Components initialization failed", 500
         
         # Get message data from Twilio
         incoming_msg = request.values.get('Body', '').strip()
         from_number = request.values.get('From', '')
         
-        # Get family member name
-        family_member = whatsapp_bot.get_family_member(from_number) if whatsapp_bot else "Unknown"
+        # Get family member name (with safety check)
+        family_member = "Unknown"
+        if whatsapp_bot:
+            try:
+                family_member = whatsapp_bot.get_family_member(from_number)
+            except Exception as e:
+                print(f"Error getting family member: {str(e)}")
+                family_member = "Unknown"
         
         print(f"Received message from {family_member} ({from_number}): {incoming_msg}")
         
         # Handle help command
         if incoming_msg.lower() in ['help', 'bantuan', 'panduan']:
-            response_msg = whatsapp_bot.format_help_message()
-            return whatsapp_bot.create_response(response_msg)
+            if whatsapp_bot:
+                response_msg = whatsapp_bot.format_help_message()
+                return whatsapp_bot.create_response(response_msg)
+            else:
+                return "Bot tidak tersedia saat ini", 500
         
         # Handle report command
         elif incoming_msg.lower() in ['laporan', 'report', 'ringkasan']:
-            summary = sheets_manager.get_monthly_summary()
-            response_msg = whatsapp_bot.format_report_message(summary)
-            return whatsapp_bot.create_response(response_msg)
+            if sheets_manager and whatsapp_bot:
+                summary = sheets_manager.get_monthly_summary()
+                response_msg = whatsapp_bot.format_report_message(summary)
+                return whatsapp_bot.create_response(response_msg)
+            else:
+                return "Layanan tidak tersedia saat ini", 500
         
         # Handle balance command
         elif incoming_msg.lower() in ['saldo', 'balance']:
-            balance = sheets_manager.get_current_balance()
-            response_msg = f"💰 *{whatsapp_bot.bot_name}*\n\nSaldo {whatsapp_bot.family_name}: Rp {balance:,}"
-            return whatsapp_bot.create_response(response_msg)
+            if sheets_manager and whatsapp_bot:
+                balance = sheets_manager.get_current_balance()
+                response_msg = f"💰 *{whatsapp_bot.bot_name}*\n\nSaldo {whatsapp_bot.family_name}: Rp {balance:,}"
+                return whatsapp_bot.create_response(response_msg)
+            else:
+                return "Layanan tidak tersedia saat ini", 500
         
         # Parse the message
         transaction = parser.parse_message(incoming_msg)
         
         if not transaction or not parser.validate_transaction(transaction):
-            response_msg = whatsapp_bot.format_error_message("parsing")
-            return whatsapp_bot.create_response(response_msg)
+            if whatsapp_bot:
+                response_msg = whatsapp_bot.format_error_message("parsing")
+                return whatsapp_bot.create_response(response_msg)
+            else:
+                return "Format pesan tidak valid", 400
         
         # Add family member to transaction
         transaction['member'] = family_member
         
         # Add transaction to Google Sheets
-        if sheets_manager.add_transaction(transaction):
-            response_msg = whatsapp_bot.format_success_message(transaction)
+        if sheets_manager and sheets_manager.add_transaction(transaction):
+            if whatsapp_bot:
+                response_msg = whatsapp_bot.format_success_message(transaction)
+                return whatsapp_bot.create_response(response_msg)
+            else:
+                return "Transaksi berhasil disimpan", 200
         else:
-            response_msg = whatsapp_bot.format_error_message("sheets")
-        
-        return whatsapp_bot.create_response(response_msg)
+            if whatsapp_bot:
+                response_msg = whatsapp_bot.format_error_message("sheets")
+                return whatsapp_bot.create_response(response_msg)
+            else:
+                return "Gagal menyimpan transaksi", 500
         
     except Exception as e:
         print(f"Error in webhook: {str(e)}")
