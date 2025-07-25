@@ -1,11 +1,3 @@
-[start]
-cmd = "gunicorn --bind 0.0.0.0:$PORT app:app"
-
+# Let Nixpacks auto-detect Python and handle everything
 [variables]
 NIXPACKS_PYTHON_VERSION = "3.9"
-
-[phases.setup]
-nixPkgs = ["python39"]
-
-[phases.install]
-cmds = ["pip install -r requirements.txt"]
