@@ -32,7 +32,7 @@ def test_date_parsing():
         "makan siang pengeluaran 20ribu yesterday",   # English
     ]
     
-    print("🧪 Testing Date Parsing Functionality\n")
+    print("[TEST] Testing Date Parsing Functionality\n")
     print("=" * 60)
     
     for i, message in enumerate(test_messages, 1):
@@ -41,7 +41,7 @@ def test_date_parsing():
         result = parser.parse_message(message)
         
         if result:
-            print(f"✅ Parsed successfully:")
+            print(f"[PASS] Parsed successfully:")
             print(f"   • Nama: {result['nama']}")
             print(f"   • Tipe: {result['tipe']}")
             print(f"   • Nominal: {result['nominal']}")
@@ -58,11 +58,11 @@ def test_date_parsing():
             is_valid = parser.validate_transaction(result)
             print(f"   • Valid: {is_valid}")
         else:
-            print("❌ Failed to parse")
+            print("[FAIL] Failed to parse")
         
         print("-" * 40)
     
-    print("\n🎯 Summary:")
+    print("\n[INFO] Summary:")
     print("The date parsing functionality supports:")
     print("• DD/MM/YYYY and DD-MM-YYYY formats")
     print("• DD/MM and DD-MM (current year)")

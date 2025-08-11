@@ -40,7 +40,7 @@ def test_message_parser():
         ("belanja pengeluaran 100k 3 hari lalu", {"has_date": True}),
     ]
     
-    print("🧪 Testing Message Parser...")
+    print("[TEST] Testing Message Parser...")
     print("=" * 50)
     
     passed = 0
@@ -53,9 +53,9 @@ def test_message_parser():
         success = (result == expected)
         if success:
             passed += 1
-            status = "✅ PASS"
+            status = "[PASS]"
         else:
-            status = "❌ FAIL"
+            status = "[FAIL]"
         
         print(f"{i:2d}. {status}")
         print(f"    Input: '{message}'")
@@ -83,7 +83,7 @@ def test_amount_parsing():
         ("10000", 10000),
     ]
     
-    print("\n💰 Testing Amount Parsing...")
+    print("\n[TEST] Testing Amount Parsing...")
     print("=" * 50)
     
     for amount_text, expected in test_amounts:
@@ -91,13 +91,13 @@ def test_amount_parsing():
         result = parser.parse_message(test_message)
         
         if result and result['nominal'] == str(int(expected)):
-            print(f"✅ '{amount_text}' -> {int(expected):,}")
+            print(f"[PASS] '{amount_text}' -> {int(expected):,}")
         else:
             actual = result['nominal'] if result else "None"
-            print(f"❌ '{amount_text}' -> Expected: {int(expected):,}, Got: {actual}")
+            print(f"[FAIL] '{amount_text}' -> Expected: {int(expected):,}, Got: {actual}")
 
 if __name__ == "__main__":
-    print("🤖 WhatsApp Finance Tracker Bot - Test Suite")
+    print("[TEST] WhatsApp Finance Tracker Bot - Test Suite")
     print("=" * 50)
     
     # Run tests
@@ -106,11 +106,11 @@ if __name__ == "__main__":
     
     print("\n" + "=" * 50)
     if parser_success:
-        print("🎉 All tests passed! Your bot parser is ready.")
+        print("[SUCCESS] All tests passed! Your bot parser is ready.")
     else:
-        print("⚠️  Some tests failed. Please check the implementation.")
+        print("[WARNING] Some tests failed. Please check the implementation.")
     
-    print("\n📝 Usage Examples:")
+    print("\n[INFO] Usage Examples:")
     print("  • makan siang pengeluaran 20ribu")
     print("  • gaji pemasukan 5juta") 
     print("  • transport pengeluaran 15k")

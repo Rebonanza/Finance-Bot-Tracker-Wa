@@ -274,7 +274,7 @@ class GoogleSheetsManager:
             }
             
         except Exception as e:
-            print(f"❌ Error getting summary: {str(e)}")
+            print(f"[ERROR] Error getting summary: {str(e)}")
             return {'total_pemasukan': 0, 'total_pengeluaran': 0, 'saldo': 0, 'recent': []}
     
     def get_current_balance(self) -> int:

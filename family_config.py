@@ -27,9 +27,9 @@ FAMILY_CONFIG = {
     },
     
     # Custom messages
-    'welcome_message': 'Welcome back gais! 👨‍👩‍👧‍👦',
-    'success_emoji': '🎉',
-    'error_emoji': '❌',
+    'welcome_message': 'Welcome back gais!',
+    'success_emoji': '[SUCCESS]',
+    'error_emoji': '[ERROR]',
     'currency_symbol': 'Rp',
     
     # Transaction categories (optional for future features)

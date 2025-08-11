@@ -28,22 +28,22 @@ def initialize_components():
         # Initialize WhatsApp bot
         whatsapp_bot = WhatsAppBot()
         
-        print("✅ All components initialized successfully")
+        print("[SUCCESS] All components initialized successfully")
         return True
         
     except Exception as e:
-        print(f"❌ Error initializing components: {str(e)}")
+        print(f"[ERROR] Error initializing components: {str(e)}")
         return False
 
 # Initialize components immediately when module loads (for production)
-print("🚀 Initializing WhatsApp Finance Tracker Bot components...")
+print("[INFO] Initializing WhatsApp Finance Tracker Bot components...")
 if not initialize_components():
-    print("❌ Warning: Some components failed to initialize")
+    print("[WARNING] Some components failed to initialize")
 
 @app.route('/')
 def home():
     """Home endpoint"""
-    return "WhatsApp Finance Tracker Bot is running! 🤖💰"
+    return "WhatsApp Finance Tracker Bot is running!"
 
 @app.route('/health')
 def health():
@@ -61,7 +61,7 @@ def health():
         
         # If components aren't initialized, try to initialize them
         if not all(status["components"].values()):
-            print("🔄 Some components not initialized, attempting initialization...")
+            print("[INFO] Some components not initialized, attempting initialization...")
             if initialize_components():
                 status["components"]["sheets_manager"] = sheets_manager is not None
                 status["components"]["whatsapp_bot"] = whatsapp_bot is not None
@@ -80,9 +80,9 @@ def webhook():
     try:
         # Check if components are initialized
         if not whatsapp_bot or not sheets_manager:
-            print("❌ Components not initialized, attempting to initialize...")
+            print("[ERROR] Components not initialized, attempting to initialize...")
             if not initialize_components():
-                print("❌ Components initialization failed")
+                print("[ERROR] Components initialization failed")
                 return "Components initialization failed", 500
         
         # Get message data from Twilio
@@ -121,7 +121,7 @@ def webhook():
         elif incoming_msg.lower() in ['saldo', 'balance']:
             if sheets_manager and whatsapp_bot:
                 balance = sheets_manager.get_current_balance()
-                response_msg = f"💰 *{whatsapp_bot.bot_name}*\n\nSaldo {whatsapp_bot.family_name}: Rp {balance:,}"
+                response_msg = f"[BALANCE] *{whatsapp_bot.bot_name}*\n\nSaldo {whatsapp_bot.family_name}: Rp {balance:,}"
                 return whatsapp_bot.create_response(response_msg)
             else:
                 return "Layanan tidak tersedia saat ini", 500
@@ -205,17 +205,17 @@ def recent_transactions():
     }
 
 if __name__ == '__main__':
-    print("🚀 Starting WhatsApp Finance Tracker Bot...")
+    print("[INFO] Starting WhatsApp Finance Tracker Bot...")
     
     # Initialize components
     if initialize_components():
         # Get port from environment variable for production deployment
         port = int(os.environ.get('PORT', 5000))
-        print(f"📱 Starting Flask server on port {port}")
-        print("🔗 Webhook URL: /webhook")
-        print("🧪 Test URL: /test")
+        print(f"[INFO] Starting Flask server on port {port}")
+        print("[INFO] Webhook URL: /webhook")
+        print("[INFO] Test URL: /test")
         
         # Production-safe settings
         app.run(debug=False, host='0.0.0.0', port=port)
     else:
-        print("❌ Failed to initialize components. Please check your configuration.")
+        print("[ERROR] Failed to initialize components. Please check your configuration.")

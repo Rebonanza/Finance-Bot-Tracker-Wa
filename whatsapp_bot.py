@@ -76,82 +76,81 @@ class WhatsAppBot:
             except:
                 pass
         
-        return f"""✅ *{self.bot_name}*
+        return f"""[SUCCESS] *{self.bot_name}*
 
-🎉 Transaksi berhasil dicatat untuk {self.family_name}!
+Transaksi berhasil dicatat untuk {self.family_name}!
 
-📝 *Detail:*
+*Detail:*
 • Member: {member_name}
 • Nama: {transaction['nama']}
 • Tipe: {transaction['tipe']}
 • Nominal: Rp {int(transaction['nominal']):,}{date_display}
 
-💡 Data tersimpan di Google Sheets
-📊 Ketik 'laporan' untuk ringkasan"""
+Data tersimpan di Google Sheets
+Ketik 'laporan' untuk ringkasan"""
     
     def format_error_message(self, error_type: str = "parsing") -> str:
         """Format error message"""
         if error_type == "parsing":
-            return f"""❌ *{self.bot_name}*
+            return f"""[ERROR] *{self.bot_name}*
 
-🤔 Format pesan tidak valid!
+Format pesan tidak valid!
 
-📋 *Contoh yang benar:*
+*Contoh yang benar:*
 • makan siang pengeluaran 20ribu
 • gaji pemasukan 5juta kemarin
 • transport pengeluaran 15k 15/07
 
-💡 Format: [nama] [pemasukan/pengeluaran] [nominal] [tanggal (opsional)]
-❓ Ketik 'help' untuk bantuan lengkap"""
+Format: [nama] [pemasukan/pengeluaran] [nominal] [tanggal (opsional)]
+Ketik 'help' untuk bantuan lengkap"""
         elif error_type == "sheets":
-            return f"""❌ *{self.bot_name}*
+            return f"""[ERROR] *{self.bot_name}*
 
-📊 Gagal menyimpan ke Google Sheets
-🔄 Silakan coba lagi dalam beberapa saat"""
+Gagal menyimpan ke Google Sheets
+Silakan coba lagi dalam beberapa saat"""
         else:
-            return f"""❌ *{self.bot_name}*
+            return f"""[ERROR] *{self.bot_name}*
 
-⚠️ Terjadi kesalahan sistem
-🔄 Silakan coba lagi"""
-🔄 Silakan coba lagi"""
+Terjadi kesalahan sistem
+Silakan coba lagi"""
     
     def format_help_message(self) -> str:
         """Format help message"""
-        return f"""🤖 *{self.bot_name}*
-👨‍👩‍👧‍👦 *Bot Keuangan {self.family_name}*
+        return f"""[HELP] *{self.bot_name}*
+*Bot Keuangan {self.family_name}*
 
-📋 *Cara Pakai:*
+*Cara Pakai:*
 Kirim pesan dengan format:
 `[nama] [tipe] [nominal] [tanggal (opsional)]`
 
-💰 *Contoh Pemasukan:*
+*Contoh Pemasukan:*
 • gaji pemasukan 5juta
 • bonus pemasukan 500ribu kemarin
 • freelance pemasukan 2jt 15/07/2025
 
-💸 *Contoh Pengeluaran:*
+*Contoh Pengeluaran:*
 • makan siang pengeluaran 20ribu
 • bensin pengeluaran 50rb kemarin
 • belanja pengeluaran 100k 20/7
 
-📅 *Format Tanggal:*
+*Format Tanggal:*
 • 15/07/2025 atau 15-07-2025
 • 15/07 atau 15-7 (tahun sekarang)
 • kemarin, besok, lusa
 • 3 hari lalu, 2 hari lagi
 • (kosong = hari ini)
 
-📊 *Format Nominal:*
+*Format Nominal:*
 • 20ribu, 20rb, 20k = 20,000
 • 5juta, 5jt, 5m = 5,000,000
 • 500000 = angka langsung
 
-🎯 *Perintah Lain:*
+*Perintah Lain:*
 • `help` - Tampilkan bantuan ini
 • `laporan` - Ringkasan keuangan
 • `saldo` - Cek saldo terkini
 
-💡 *Semua data tersimpan di Google Sheets untuk akses keluarga!*"""
+*Semua data tersimpan di Google Sheets untuk akses keluarga!*"""
     
     def get_family_member(self, phone_number: str) -> str:
         """Get family member name from phone number"""
@@ -159,18 +158,18 @@ Kirim pesan dengan format:
     
     def format_report_message(self, summary: dict) -> str:
         """Format financial report message"""
-        return f"""📊 *{self.bot_name}*
-📈 *Laporan Keuangan {self.family_name}*
+        return f"""[REPORT] *{self.bot_name}*
+*Laporan Keuangan {self.family_name}*
 
-💰 *Ringkasan Bulan Ini:*
+*Ringkasan Bulan Ini:*
 • Total Pemasukan: Rp {summary.get('total_pemasukan', 0):,}
 • Total Pengeluaran: Rp {summary.get('total_pengeluaran', 0):,}
 • Saldo: Rp {summary.get('saldo', 0):,}
 
-📋 *Transaksi Terakhir:*
+*Transaksi Terakhir:*
 {self._format_recent_transactions(summary.get('recent', []))}
 
-💡 Lihat detail lengkap di Google Sheets"""
+Lihat detail lengkap di Google Sheets"""
     
     def _format_recent_transactions(self, transactions: list) -> str:
         """Format recent transactions for display"""
@@ -179,7 +178,7 @@ Kirim pesan dengan format:
         
         formatted = []
         for i, tx in enumerate(transactions[:5], 1):
-            icon = "💰" if tx.get('tipe') == 'pemasukan' else "💸"
+            icon = "[IN]" if tx.get('tipe') == 'pemasukan' else "[OUT]"
             member = tx.get('member', 'Unknown')
             formatted.append(f"{i}. {icon} {tx['nama']} - Rp {int(tx['nominal']):,} ({member})")
         
