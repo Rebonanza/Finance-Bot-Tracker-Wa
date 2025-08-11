@@ -103,7 +103,7 @@ class GoogleSheetsManager:
         Add a transaction to the Google Sheet
         
         Args:
-            transaction: Dictionary with 'nama', 'tipe', 'nominal', 'member' keys
+            transaction: Dictionary with 'nama', 'tipe', 'nominal', 'member', and optionally 'tanggal' keys
             
         Returns:
             True if transaction was added successfully, False otherwise
@@ -111,9 +111,15 @@ class GoogleSheetsManager:
         try:
             from datetime import datetime
             
+            # Use custom date if provided, otherwise use current timestamp
+            if 'tanggal' in transaction and transaction['tanggal']:
+                transaction_date = transaction['tanggal']
+            else:
+                transaction_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            
             # Prepare the data with timestamp and family member
             transaction_data = [[
-                datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                transaction_date,
                 transaction.get('member', 'Unknown'),
                 transaction['nama'],
                 transaction['tipe'],
@@ -128,7 +134,7 @@ class GoogleSheetsManager:
                 body={'values': transaction_data}
             ).execute()
             
-            print(f"Transaction added successfully: {transaction['nama']} - {transaction['tipe']} - {transaction['nominal']} ({transaction.get('member', 'Unknown')})")
+            print(f"Transaction added successfully: {transaction['nama']} - {transaction['tipe']} - {transaction['nominal']} ({transaction.get('member', 'Unknown')}) on {transaction_date}")
             return True
             
         except HttpError as e:

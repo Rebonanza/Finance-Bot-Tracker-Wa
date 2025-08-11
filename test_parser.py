@@ -31,6 +31,15 @@ def test_message_parser():
         ("", None),  # Empty string
     ]
     
+    # Add date test cases
+    date_test_cases = [
+        # With dates - just check if parsing succeeds and has date field
+        ("makan siang pengeluaran 20ribu kemarin", {"has_date": True}),
+        ("gaji pemasukan 5juta 15/07/2025", {"has_date": True}),
+        ("transport pengeluaran 15k besok", {"has_date": True}),
+        ("belanja pengeluaran 100k 3 hari lalu", {"has_date": True}),
+    ]
+    
     print("🧪 Testing Message Parser...")
     print("=" * 50)
     

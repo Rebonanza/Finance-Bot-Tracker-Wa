@@ -65,6 +65,17 @@ class WhatsAppBot:
     def format_success_message(self, transaction: dict) -> str:
         """Format success message for transaction"""
         member_name = transaction.get('member', 'Family Member')
+        
+        # Format date for display
+        date_display = ""
+        if 'tanggal' in transaction and transaction['tanggal']:
+            try:
+                from datetime import datetime
+                date_obj = datetime.strptime(transaction['tanggal'], '%Y-%m-%d %H:%M:%S')
+                date_display = f"\n• Tanggal: {date_obj.strftime('%d/%m/%Y %H:%M')}"
+            except:
+                pass
+        
         return f"""✅ *{self.bot_name}*
 
 🎉 Transaksi berhasil dicatat untuk {self.family_name}!
@@ -73,7 +84,7 @@ class WhatsAppBot:
 • Member: {member_name}
 • Nama: {transaction['nama']}
 • Tipe: {transaction['tipe']}
-• Nominal: Rp {int(transaction['nominal']):,}
+• Nominal: Rp {int(transaction['nominal']):,}{date_display}
 
 💡 Data tersimpan di Google Sheets
 📊 Ketik 'laporan' untuk ringkasan"""
@@ -87,10 +98,10 @@ class WhatsAppBot:
 
 📋 *Contoh yang benar:*
 • makan siang pengeluaran 20ribu
-• gaji pemasukan 5juta
-• transport pengeluaran 15k
+• gaji pemasukan 5juta kemarin
+• transport pengeluaran 15k 15/07
 
-💡 Format: [nama] [pemasukan/pengeluaran] [nominal]
+💡 Format: [nama] [pemasukan/pengeluaran] [nominal] [tanggal (opsional)]
 ❓ Ketik 'help' untuk bantuan lengkap"""
         elif error_type == "sheets":
             return f"""❌ *{self.bot_name}*
@@ -102,25 +113,33 @@ class WhatsAppBot:
 
 ⚠️ Terjadi kesalahan sistem
 🔄 Silakan coba lagi"""
+🔄 Silakan coba lagi"""
     
     def format_help_message(self) -> str:
         """Format help message"""
         return f"""🤖 *{self.bot_name}*
-� *Bot Keuangan {self.family_name}*
+👨‍👩‍👧‍👦 *Bot Keuangan {self.family_name}*
 
 📋 *Cara Pakai:*
 Kirim pesan dengan format:
-`[nama] [tipe] [nominal]`
+`[nama] [tipe] [nominal] [tanggal (opsional)]`
 
 💰 *Contoh Pemasukan:*
 • gaji pemasukan 5juta
-• bonus pemasukan 500ribu
-• freelance pemasukan 2jt
+• bonus pemasukan 500ribu kemarin
+• freelance pemasukan 2jt 15/07/2025
 
 💸 *Contoh Pengeluaran:*
 • makan siang pengeluaran 20ribu
-• bensin pengeluaran 50rb
-• belanja pengeluaran 100k
+• bensin pengeluaran 50rb kemarin
+• belanja pengeluaran 100k 20/7
+
+📅 *Format Tanggal:*
+• 15/07/2025 atau 15-07-2025
+• 15/07 atau 15-7 (tahun sekarang)
+• kemarin, besok, lusa
+• 3 hari lalu, 2 hari lagi
+• (kosong = hari ini)
 
 📊 *Format Nominal:*
 • 20ribu, 20rb, 20k = 20,000
